@@ -1,0 +1,33 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build main.cpp",
+            "type": "cppbuild",
+            "command": "C:\\mingw64-gcc13\\bin\\g++.exe",
+            "args": [
+                "-g", "main.cpp", "-o", "main.exe",
+                "-IC:/SFML-Build/install/include",
+                "-LC:/SFML-Build/install/lib",
+                "-lsfml-graphics", "-lsfml-window", "-lsfml-system",
+                "-lgdi32", "-lopengl32"
+            ],
+            "group": "build",
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "Build test.cpp",
+            "type": "cppbuild",
+            "command": "C:\\mingw64-gcc13\\bin\\g++.exe",
+            "args": [
+                "-g", "test.cpp", "-o", "test.exe",
+                "-IC:/SFML-Build/install/include",
+                "-LC:/SFML-Build/install/lib",
+                "-lsfml-graphics", "-lsfml-window", "-lsfml-system",
+                "-lgdi32", "-lopengl32"
+            ],
+            "group": "build",
+            "problemMatcher": ["$gcc"]
+        }
+    ]
+}

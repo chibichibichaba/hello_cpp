@@ -1,0 +1,30 @@
+[
+    {
+        "planet_name": "Sun",
+        "mass": 1.989E30,
+        "distance_from_sun_km": 0,
+        "planet_radius": 696340,
+        "orbital_velocity": 0
+    },
+    {
+        "planet_name": "Earth",
+        "mass": 5.972E24,
+        "distance_from_sun_km": 149600000,
+        "planet_radius": 6371,
+        "orbital_velocity": 29.8
+    },
+    {
+        "planet_name": "Venus",
+        "mass": 4.867E24,
+        "distance_from_sun_km": 108200000,
+        "planet_radius": 6051.8,
+        "orbital_velocity": 35
+    },
+    {
+        "planet_name": "Mercury",
+        "mass": 3.285E23,
+        "distance_from_sun_km": 57900000,
+        "planet_radius": 2439.7,
+        "orbital_velocity": 47.4
+    }
+]
