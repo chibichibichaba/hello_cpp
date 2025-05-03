@@ -1,7 +1,7 @@
 [
     {
         "planet_name": "Sun",
-        "mass": 1,
+        "mass": 1.989E30,
         "distance_from_sun_km": 0,
         "planet_radius": 696340,
         "orbital_velocity": 0,

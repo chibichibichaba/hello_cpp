@@ -7,10 +7,12 @@
 using json = nlohmann::json;
 #include <SFML/Graphics.hpp>
 
-const float distance_scalar = 100.f; // 1.0f/831111.0f;
-const float radius_scalar_sun= 2.0f/ 34817.0f;
-const float radius_scalar_planet = 2.0f/631.07;
-const float G = 6.67E-2f;
+const float distance_scalar = 300.f; //px/AU
+const float velocity_scalar = 0.21056; // (AU/km) / (years/sec) 
+const float radius_scalar_sun= 4.3082E-5; //px/km
+const float radius_scalar_planet = 0.00235; //px/km
+const float G = 39.40; 
+
 
 struct Planet {
     std::string planet_name;
@@ -26,7 +28,6 @@ void from_json(const json& j, Planet& p){
     j.at("mass").get_to(p.mass);
     j.at("distance_from_sun_km").get_to(p.distance_from_sun_km);
     j.at("planet_radius").get_to(p.planet_radius);
-    j.at("planet_name").get_to(p.planet_name);
     if(j.contains("orbital_velocity")){
         const auto& orbital_velocity = j.at("orbital_velocity");
         orbital_velocity.get_to(p.orbital_velocity);
@@ -93,29 +94,34 @@ class PlanetRenderer {
         void update_velocity(const std::vector<PlanetRenderer>& planets, float dt) {
             sf::Vector2f total_force = sf::Vector2f(0.f, 0.f);
 
+            /*
             // Debug: Print current planet's mass and inverse mass
             std::cout << "\n--- Updating velocity for planet ---\n";
             std::cout << "Mass: " << mass << " kg\n";
             std::cout << "Inverse Mass: " << inverse_mass << " kg⁻¹\n";
             std::cout << "Position: (" << position.x << ", " << position.y << ") km\n";
+            */
 
             for (const auto& other : planets) {
                 if (&other == this) continue;
 
+                /*
                 // Debug: Print other planet's details
                 std::cout << "  Other Mass: " << other.mass << " kg\n";
                 std::cout << "  Other Position: (" << other.position.x << ", " 
                         << other.position.y << ") km\n";
-
+                 */
                 // Calculate distance between planets
                 sf::Vector2f distance_delta = other.position - position;
                 float square_distance = distance_delta.x * distance_delta.x 
                                     + distance_delta.y * distance_delta.y;
 
+                /*
                 // Debug: Print distance calculations
                 std::cout << "  Δ Distance: (" << distance_delta.x << ", " 
                         << distance_delta.y << ") km\n";
                 std::cout << "  Square Distance: " << square_distance << " km²\n";
+                */
 
                 if (square_distance == 0) {
                     std::cout << "  !!! Zero distance detected - skipping !!!\n";
@@ -125,20 +131,23 @@ class PlanetRenderer {
                 // Calculate direction
                 float inv_length = 1.f / std::sqrt(square_distance);
                 sf::Vector2f direction = distance_delta * inv_length;
-
+                /*
                 // Debug: Print direction and intermediate values
                 std::cout << "  Inv Length: " << inv_length << " km⁻¹\n";
                 std::cout << "  Direction: (" << direction.x << ", " 
                         << direction.y << ")\n";
+                */
 
                 // Calculate gravitational force
                 float force_magnitude = G * (mass * other.mass) / square_distance;
                 sf::Vector2f force = force_magnitude * direction;
 
+                /*
                 // Debug: Print force contribution
                 std::cout << "  Force Magnitude: " << force_magnitude << " N\n";
                 std::cout << "  Force Vector: (" << force.x << ", " 
                         << force.y << ") N\n";
+                */
 
                 total_force += force;
             }
@@ -148,9 +157,9 @@ class PlanetRenderer {
                     << total_force.y << ") N\n";
             std::cout << "Velocity Before: (" << velocity.x << ", " 
                     << velocity.y << ") km/s\n";
-
+            */
             velocity += total_force * inverse_mass * dt;
-
+            /*
             // Debug: Print velocity after update
             std::cout << "Velocity After: (" << velocity.x << ", " 
                     << velocity.y << ") km/s\n";
@@ -175,7 +184,6 @@ std::vector<PlanetRenderer> create_renderers(std::vector<Planet>& planet_data){
 
         const float AU = 149.6e6f;       // 1 AU in km
         const float solar_mass = 1.989e30f; // 1 M☉ in kg
-        const float years_per_sec = 1.0f / 3.154e7f; // Convert s → yr
 
         renderers.emplace_back(
             sf::Vector2f(0, p.distance_from_sun_km / AU * distance_scalar), // Screen position
@@ -183,7 +191,7 @@ std::vector<PlanetRenderer> create_renderers(std::vector<Planet>& planet_data){
             p.color,
             p.mass / solar_mass,  // Mass in M☉
             sf::Vector2f(0, p.distance_from_sun_km / AU),  // Physics position (AU)
-            sf::Vector2f(p.orbital_velocity * years_per_sec * AU, 0),  // Velocity (AU/yr)
+            sf::Vector2f(p.orbital_velocity * velocity_scalar, 0),  // Velocity (AU/yr)
             p.planet_name
         );
     }
@@ -255,16 +263,10 @@ class RenderPlanet
 
 
 
-
-
-
-
-
-
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(1280, 720), "orbit simulator", sf::Style::None);
-    window.setFramerateLimit(1);
+    window.setFramerateLimit(90);
     sf::View view(sf::FloatRect(-640, -360, 1280, 720));
     window.setView(view);
 
